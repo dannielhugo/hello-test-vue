@@ -1,41 +1,59 @@
 <template>
   <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
     <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-unit-jest" target="_blank" rel="noopener">unit-jest</a></li>
+      <li v-for="link in links" :key="link.text">
+        <a :href="link.href" target="_blank" rel="noopener">{{link.text}}</a>
+      </li>
     </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
+
+    <button @click="fetchStarships">FETCH STARSHIPS</button>
+
+    <ul v-if="starships.length > 0" class="starships">
+      <li v-for="starship in starships" :key="starship.name">
+        <p>Model: {{starship.model}}</p>
+        <p>Name: {{starship.name}}</p>
+        <p>Credits: {{starship.cost_in_credits}}</p>
+      </li>
     </ul>
   </div>
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   name: 'HelloWorld',
   props: {
-    msg: String
+    // SNAPSHOT TEST
+    // showAwesomeVue: {
+    //   type: Boolean,
+    //   default: true,
+    // },
+  },
+  data() {
+    return {
+      links: [
+        {href: 'https://router.vuejs.org', text: 'vue-router'},
+        {href: 'https://vuex.vuejs.org', text: 'vuex'},
+        {href: 'https://github.com/vuejs/vue-devtools#vue-devtools', text: 'vue-devtools'},
+        {href: 'https://vue-loader.vuejs.org', text: 'vue-loader'},
+      ],
+      starships: []
+    };
+  },
+  async mounted() {
+    // SNAPSHOT TEST
+    // if (this.showAwesomeVue) {
+    //   this.links.push(
+    //     {href: 'https://github.com/vuejs/awesome-vue', text: 'awesome-vue'},
+    //   );
+    // }
+  },
+  methods: {
+    async fetchStarships() {
+      const response = await axios.get('https://swapi.dev/api/starships/');
+      this.starships = response.data.results;
+    }
   }
 }
 </script>
@@ -55,5 +73,16 @@ li {
 }
 a {
   color: #42b983;
+}
+
+.starships {
+  display: flex;
+  flex-direction: column;
+}
+
+.starships li {
+  border: 2px solid #f1f1f1;
+  border-radius: 1.5rem;
+  margin-top: 1rem;
 }
 </style>
